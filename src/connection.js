@@ -4,7 +4,7 @@ const knex = require('knex')({
         host: process.env.DB_HOST,
         password: process.env.PASSWORD,
         database: process.env.DATABASE,
-        port: process.env.PORT
+        port: process.env.PORT || 5432
     }
 });
 
