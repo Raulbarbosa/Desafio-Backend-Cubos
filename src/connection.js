@@ -1,10 +1,11 @@
 const knex = require('knex')({
     client: 'pg',
     connection: {
+        user: process.env.DB_USER,
         host: process.env.DB_HOST,
-        password: process.env.PASSWORD,
-        database: process.env.DATABASE,
-        port: process.env.PORT || 5432
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        port: process.env.DB_PORT
     }
 });
 

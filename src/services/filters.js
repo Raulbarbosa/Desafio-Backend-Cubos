@@ -8,7 +8,7 @@ const checkPassword = (password) => {
 }
 
 const createUserSchema = yup.object().shape({
-    name: yup.string().required(),
+    nome: yup.string().required(),
     email: yup.string().email().required(),
     senha: yup.string().required()
 })

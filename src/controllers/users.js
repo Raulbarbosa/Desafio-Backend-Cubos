@@ -25,17 +25,14 @@ const createUser = async (req, res) => {
             nome,
             email,
             senha: passwordEncrypted
-        }).returning('*');
+        }).returning(["id", "nome", "email"]);
 
-        console.log(user);
 
-        return
-
-        return res.status(201).json(user)
+        return res.status(201).json(user);
 
 
     } catch (error) {
-        console.log(error);
+        return res.status(400).json(error.message);
     }
 
 }
