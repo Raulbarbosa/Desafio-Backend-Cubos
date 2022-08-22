@@ -12,9 +12,9 @@ CREATE TABLE IF NOT EXISTS users(
     cpf varchar(11) unique
 );
 
-drop table if exists costumers;
+drop table if exists customers;
 
-CREATE TABLE IF NOT EXISTS costumers(
+CREATE TABLE IF NOT EXISTS customers(
 	id serial primary key,
     nome text not null,
     email text unique not null,

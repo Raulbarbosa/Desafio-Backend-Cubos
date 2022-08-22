@@ -25,13 +25,11 @@ const login = async (req, res) => {
         const { senha: _, ...userData } = user;
 
         const token = jwt.sign({
-            id: user.id,
-            nome: user.nome,
-            email: user.email
-        }, process.env.PRIVATEKEY);
+            id: user.id
+        }, process.env.PRIVATEKEY, { expiresIn: '1d' });
 
         return res.status(200).json({
-            usuario: userData,
+            user: userData,
             token
         });
 

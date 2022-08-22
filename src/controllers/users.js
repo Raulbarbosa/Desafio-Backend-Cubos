@@ -1,14 +1,10 @@
 const brcrypt = require('bcrypt');
 const knex = require('../connection');
-const { createUserSchema, checkPassword } = require('../../src/services/filters');
+const { createUserSchema } = require('../../src/services/filters');
 
 
 const createUser = async (req, res) => {
     const { nome, email, senha } = req.body;
-
-    if (!checkPassword(senha)) {
-        return res.status(400).json({ "Message": "A senha não antende os requisitos mínimos." })
-    }
 
     try {
         await createUserSchema.validate(req.body);
@@ -27,14 +23,11 @@ const createUser = async (req, res) => {
             senha: passwordEncrypted
         }).returning(["id", "nome", "email"]);
 
-
         return res.status(201).json(user);
-
 
     } catch (error) {
         return res.status(400).json(error.message);
     }
-
 }
 
 module.exports = {
