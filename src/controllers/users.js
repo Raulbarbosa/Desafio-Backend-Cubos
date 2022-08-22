@@ -12,7 +12,7 @@ const createUser = async (req, res) => {
         const userAlreadyExists = await knex('users').where({ email }).first();
 
         if (userAlreadyExists) {
-            return res.status(400).json({ "message": "e-mail já cadastrado" });
+            return res.status(400).json({ "message": "E-mail já cadastrado" });
         }
 
         const passwordEncrypted = await brcrypt.hash(senha, 10);
