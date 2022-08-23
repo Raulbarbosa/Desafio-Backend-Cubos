@@ -1,5 +1,5 @@
 const knex = require('../connection');
-const { registerCustomersUserSchema } = require('../../src/services/filters');
+const { createCustomersSchema } = require('../../src/services/filters');
 
 const createCustomers = async (req, res) => {
     const { user } = req;

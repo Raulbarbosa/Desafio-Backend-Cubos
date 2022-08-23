@@ -1,15 +1,17 @@
 const express = require('express');
-const { createUser } = require('./controllers/users');
+const users = require('./controllers/users');
 const { login } = require('./controllers/login');
 const checkLogin = require('./services/checkLogin');
-const customers = require('./controllers/customers')
+const customers = require('./controllers/customers');
 
 const routes = express();
 
-routes.post('/users', createUser);
+routes.post('/users', users.createUser);
 routes.post('/login', login);
 
 routes.use(checkLogin);
+
+routes.put('/users/', users.updateUser);
 
 routes.post('/customers', customers.createCustomers);
 routes.get('/customers/:id', customers.getCustomer);
