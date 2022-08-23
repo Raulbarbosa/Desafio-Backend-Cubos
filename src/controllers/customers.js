@@ -81,16 +81,27 @@ const updateCustomer = async (req, res) => {
     const { id } = req.params;
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
 
-
     try {
         await registerCustomersUserSchema.validate(req.body);
-        const customerFound = await knex('customers').where({
-            id,
-            user_id: user.id
-        }).first();
+
+        const customerFound = await knex('customers').where({ id, user_id: user.id }).first();
 
         if (!customerFound) {
             return res.status(404).json('Cliente não encontrado');
+        }
+
+        if (email !== customerFound.email) {
+            const emailAlreadyExists = await knex('customers').where({ email }).first();
+            if (emailAlreadyExists) {
+                return res.status(400).json({ "message": "e-mail já cadastrado" });
+            }
+        }
+
+        if (cpf !== customerFound.cpf) {
+            const cpfAlreadyExists = await knex('customers').where({ cpf }).first();
+            if (cpfAlreadyExists) {
+                return res.status(400).json({ "message": "cpf já cadastrado" });
+            }
         }
 
         const customer = await knex('customers')
