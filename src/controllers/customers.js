@@ -6,7 +6,7 @@ const createCustomers = async (req, res) => {
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
 
     try {
-        await registerCustomersUserSchema.validate(req.body);
+        await createCustomersSchema.validate(req.body);
         const emailAlreadyExists = await knex('customers').where({ email }).first();
         const cpfAlreadyExists = await knex('customers').where({ cpf }).first();
 
@@ -59,7 +59,7 @@ const getCustomer = async (req, res) => {
 
         return res.status(200).json(customer);
     } catch (error) {
-        return res.status(400).json(error.message);
+        return res.status(500).json(error.message);
     }
 }
 
@@ -72,7 +72,7 @@ const getAllCustomers = async (req, res) => {
 
         return res.status(200).json(customers);
     } catch (error) {
-        return res.status(400).json(error.message);
+        return res.status(500).json(error.message);
     }
 }
 
@@ -82,9 +82,9 @@ const updateCustomer = async (req, res) => {
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
 
     try {
-        await registerCustomersUserSchema.validate(req.body);
 
         const customerFound = await knex('customers').where({ id, user_id: user.id }).first();
+        await createCustomersSchema.validate(req.body);
 
         if (!customerFound) {
             return res.status(404).json('Cliente não encontrado');
@@ -125,7 +125,7 @@ const updateCustomer = async (req, res) => {
 
         return res.status(200).json('cliente foi atualizado com sucesso.');
     } catch (error) {
-        return res.status(400).json(error.message);
+        return res.status(500).json(error.message);
     }
 }
 
@@ -154,7 +154,7 @@ const deleteCustomer = async (req, res) => {
 
         return res.status(200).json('Cliente excluido com sucesso');
     } catch (error) {
-        return res.status(400).json(error.message);
+        return res.status(500).json(error.message);
     }
 }
 
