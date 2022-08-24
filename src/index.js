@@ -8,4 +8,4 @@ server.use(cors());
 server.use(express.json());
 server.use(routes);
 
-server.listen(process.env.PORT);
+server.listen(process.env.PORT || process.env.LOCAL_PORT);
