@@ -108,7 +108,21 @@ const updateUser = async (req, res) => {
     }
 }
 
+const getUser = async (req, res) => {
+    const { user } = req;
+
+    if (!user) {
+        return res.status(404).json({
+            "mensagem": "Para acessar este recurso um token de autenticação válido deve ser enviado."
+        })
+    }
+
+    return res.status(200).json(user);
+
+}
+
 module.exports = {
     createUser,
-    updateUser
+    updateUser,
+    getUser
 }

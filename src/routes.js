@@ -12,6 +12,7 @@ routes.post('/login', login);
 routes.use(checkLogin);
 
 routes.put('/users/', users.updateUser);
+routes.get('/users/', users.getUser)
 
 routes.post('/customers', customers.createCustomers);
 routes.get('/customers/:id', customers.getCustomer);
