@@ -3,6 +3,7 @@ const users = require('./controllers/users');
 const { login } = require('./controllers/login');
 const checkLogin = require('./services/checkLogin');
 const customers = require('./controllers/customers');
+const charges = require('./controllers/charges');
 
 const routes = express();
 
@@ -17,6 +18,8 @@ routes.get('/users/', users.getUser)
 routes.post('/customers', customers.createCustomers);
 routes.get('/customers/:id', customers.getCustomer);
 routes.get('/customers', customers.getAllCustomers);
+
+routes.post('/charges', charges.createCharge)
 
 routes.put('/customers/:id', customers.updateCustomer);
 routes.delete('/customers/:id', customers.deleteCustomer);

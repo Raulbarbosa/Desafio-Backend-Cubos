@@ -23,8 +23,16 @@ const createCustomersSchema = yup.object().shape({
     cep: yup.string().min(8, 'CEP inválido').max(8, 'CEP inválido')
 })
 
+const createChargeSchema = yup.object().shape({
+    cliente: yup.number().required(),
+    descricao: yup.string().required(),
+    valor: yup.number().required(),
+    vencimento: yup.date().required()
+})
+
 module.exports = {
     createUserSchema,
     createCustomersSchema,
-    updateUserSchema
+    updateUserSchema,
+    createChargeSchema
 }
