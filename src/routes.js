@@ -19,7 +19,11 @@ routes.post('/customers', customers.createCustomers);
 routes.get('/customers/:id', customers.getCustomer);
 routes.get('/customers', customers.getAllCustomers);
 
-routes.post('/charges', charges.createCharge)
+routes.post('/charges', charges.createCharge);
+routes.put('/charges/:id', charges.updateCharge);
+routes.get('/charges/:id', charges.getCharge);
+routes.get('/charges', charges.getAllCharges);
+routes.delete('/charges/:id', charges.deleteCharge);
 
 routes.put('/customers/:id', customers.updateCustomer);
 routes.delete('/customers/:id', customers.deleteCustomer);
