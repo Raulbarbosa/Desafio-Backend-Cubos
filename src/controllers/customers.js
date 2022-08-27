@@ -55,6 +55,24 @@ const getCustomer = async (req, res) => {
     }
 }
 
+const getCustomerCharges = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const charges = await knex('charges').where('charges.customer_id', id);
+
+        if (!charges) {
+            return res.status(404).json({ "message": "Não possui cobranças." })
+        }
+
+        return res.status(200).json(charges);
+
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+
+}
+
 const getAllCustomers = async (req, res) => {
 
     try {
@@ -145,5 +163,6 @@ module.exports = {
     getCustomer,
     getAllCustomers,
     updateCustomer,
-    deleteCustomer
+    deleteCustomer,
+    getCustomerCharges
 }

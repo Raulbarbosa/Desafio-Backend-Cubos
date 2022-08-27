@@ -18,6 +18,8 @@ routes.get('/users/', users.getUser)
 routes.post('/customers', customers.createCustomers);
 routes.get('/customers/:id', customers.getCustomer);
 routes.get('/customers', customers.getAllCustomers);
+routes.get('/customers/:id/charges', customers.getCustomerCharges);
+
 
 routes.post('/charges', charges.createCharge);
 routes.put('/charges/:id', charges.updateCharge);

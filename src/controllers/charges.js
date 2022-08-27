@@ -57,10 +57,10 @@ const updateCharge = async (req, res) => {
 }
 
 const getCharge = async (req, res) => {
-    const { id } = req.params;
+    const { id: chargeId } = req.params;
 
     try {
-        const charge = await knex('charges').where({ id }).first();
+        const charge = await knex('charges').join('customers', 'charges.customer_id', 'customers.id').select('charges.*', 'customers.nome').where("charges.id", chargeId);
 
         if (!charge) {
             return res.status(404).json('Cobrança não encontrada');
@@ -75,7 +75,7 @@ const getCharge = async (req, res) => {
 const getAllCharges = async (req, res) => {
 
     try {
-        const charges = await knex('charges');
+        const charges = await knex('charges').join('customers', 'charges.customer_id', 'customers.id').select('charges.*', 'customers.nome');
         return res.status(200).json(charges);
 
     } catch (error) {
