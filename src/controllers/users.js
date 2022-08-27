@@ -1,7 +1,6 @@
 const brcrypt = require('bcrypt');
 const knex = require('../connection');
 const { createUserSchema, updateUserSchema } = require('../../src/services/filters');
-const { json } = require('express');
 
 
 const createUser = async (req, res) => {

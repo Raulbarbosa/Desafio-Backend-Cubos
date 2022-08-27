@@ -2,9 +2,7 @@ const knex = require('../connection');
 const { createCustomersSchema } = require('../../src/services/filters');
 
 const createCustomers = async (req, res) => {
-    const { user } = req;
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
-
     try {
         await createCustomersSchema.validate(req.body);
         const emailAlreadyExists = await knex('customers').where({ email }).first();
@@ -19,7 +17,6 @@ const createCustomers = async (req, res) => {
         }
 
         const customer = await knex('customers').insert({
-            user_id: user.id,
             nome,
             email,
             telefone,
@@ -43,15 +40,10 @@ const createCustomers = async (req, res) => {
 }
 
 const getCustomer = async (req, res) => {
-    const { user } = req;
     const { id } = req.params;
 
     try {
-        const customer = await knex('customers').where({
-            id,
-            user_id: user.id
-
-        }).first();
+        const customer = await knex('customers').where({ id }).first();
 
         if (!customer) {
             return res.status(404).json('Cliente não encontrado');
@@ -63,27 +55,42 @@ const getCustomer = async (req, res) => {
     }
 }
 
-const getAllCustomers = async (req, res) => {
-    const { user } = req;
+const getCustomerCharges = async (req, res) => {
+    const { id } = req.params;
 
     try {
-        const customers = await knex('customers')
-            .where({ user_id: user.id });
+        const charges = await knex('charges').where('charges.customer_id', id);
 
+        if (!charges) {
+            return res.status(404).json({ "message": "Não possui cobranças." })
+        }
+
+        return res.status(200).json(charges);
+
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+
+}
+
+const getAllCustomers = async (req, res) => {
+
+    try {
+        const customers = await knex('customers');
         return res.status(200).json(customers);
+
     } catch (error) {
         return res.status(500).json(error.message);
     }
 }
 
 const updateCustomer = async (req, res) => {
-    const { user } = req;
     const { id } = req.params;
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
 
     try {
 
-        const customerFound = await knex('customers').where({ id, user_id: user.id }).first();
+        const customerFound = await knex('customers').where({ id }).first();
         await createCustomersSchema.validate(req.body);
 
         if (!customerFound) {
@@ -130,23 +137,16 @@ const updateCustomer = async (req, res) => {
 }
 
 const deleteCustomer = async (req, res) => {
-    const { user } = req;
     const { id } = req.params;
 
     try {
-        const customerExist = await knex('customers').where({
-            id,
-            user_id: user.id
-        }).first();
+        const customerExist = await knex('customers').where({ id }).first();
 
         if (!customerExist) {
             return res.status(404).json('Cliente não encontrado');
         }
 
-        const customerDeleted = await knex('customers').where({
-            id,
-            user_id: user.id
-        }).del();
+        const customerDeleted = await knex('customers').where({ id }).del();
 
         if (!customerDeleted) {
             return res.status(400).json("O cliente não foi excluido");
@@ -163,5 +163,6 @@ module.exports = {
     getCustomer,
     getAllCustomers,
     updateCustomer,
-    deleteCustomer
+    deleteCustomer,
+    getCustomerCharges
 }
