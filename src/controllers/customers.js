@@ -4,7 +4,7 @@ const { createCustomersSchema } = require('../../src/services/filters');
 const createCustomers = async (req, res) => {
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
     try {
-        // await createCustomersSchema.validate(req.body);
+        await createCustomersSchema.validate(req.body);
         const emailAlreadyExists = await knex('customers').where({ email }).first();
         const cpfAlreadyExists = await knex('customers').where({ cpf }).first();
 

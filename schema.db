@@ -1,6 +1,5 @@
 CREATE DATABASE financial_controls;
 
-
 drop table if exists users;
 
 CREATE TABLE IF NOT EXISTS users(
@@ -25,15 +24,17 @@ CREATE TABLE IF NOT EXISTS customers(
     complemento text,
     bairro text,
     cidade text,
-    estado text,
-    user_id int not null,
-    foreign key (user_id) references users(id)
+    estado text
 );
 
+drop table if exists charges;
 
-
-
-
-
-
-
+CREATE TABLE IF NOT EXISTS charges(
+	id serial primary key,
+    descricao text not null,
+    status text not null,
+    valor int not null,
+  	vencimento date not null,
+    customer_id int not null,
+    foreign key (customer_id) references customers(id)
+);
