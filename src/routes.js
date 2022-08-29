@@ -16,9 +16,8 @@ routes.put('/users/', users.updateUser);
 routes.get('/users/', users.getUser)
 
 routes.post('/customers', customers.createCustomers);
-routes.get('/customers/:id', customers.getCustomer);
 routes.get('/customers', customers.getAllCustomers);
-routes.get('/customers/:id/charges', customers.getCustomerCharges);
+routes.get('/customers/:id', customers.getCustomerDetail);
 
 
 routes.post('/charges', charges.createCharge);

@@ -1,6 +1,5 @@
 const knex = require('../connection');
 const { createCustomersSchema } = require('../../src/services/filters');
-const { date } = require('yup');
 
 const createCustomers = async (req, res) => {
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
@@ -40,33 +39,26 @@ const createCustomers = async (req, res) => {
     }
 }
 
-const getCustomer = async (req, res) => {
+const getCustomerDetail = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const customer = await knex('customers').where({ id }).first();
+        const customer = await knex('customers').where({ id });
 
         if (!customer) {
-            return res.status(404).json('Cliente não encontrado');
+            return res.status(404).json("Cliente não encontrado")
         }
 
-        return res.status(200).json(customer);
-    } catch (error) {
-        return res.status(500).json(error.message);
-    }
-}
+        const chargesCustomer = await knex('charges').join('customers', 'charges.customer_id', 'customers.id')
+            .select('charges.*').where('customer_id', id);
 
-const getCustomerCharges = async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const charges = await knex('charges').where('charges.customer_id', id);
-
-        if (!charges) {
-            return res.status(404).json({ "message": "Não possui cobranças." })
+        for (let charge of chargesCustomer) {
+            if (charge.vencimento < new Date() && charge.status === "pendente") {
+                charge.status = "vencida";
+            }
         }
 
-        return res.status(200).json(charges);
+        return res.status(200).json({ customer, chargesCustomer });
 
     } catch (error) {
         return res.status(500).json(error.message)
@@ -83,6 +75,7 @@ const getAllCustomers = async (req, res) => {
                 .where('charges.vencimento', '<', 'NOW()').first();
 
             if (overdueChargesFound) {
+                console.log(customer)
                 customer.status = "Inadimplente"
             } else {
                 customer.status = "Em dia"
@@ -171,9 +164,8 @@ const deleteCustomer = async (req, res) => {
 
 module.exports = {
     createCustomers,
-    getCustomer,
     getAllCustomers,
     updateCustomer,
     deleteCustomer,
-    getCustomerCharges
+    getCustomerDetail
 }
