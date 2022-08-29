@@ -53,12 +53,8 @@ const getCustomerDetail = async (req, res) => {
             .select('charges.*').where('customer_id', id);
 
         for (let charge of chargesCustomer) {
-            const overdueChargesFound = await knex('charges').where('charges.customer_id', id).where('charges.status', 'pendente')
-                .where('charges.vencimento', '<', 'NOW()');
-
-            if (overdueChargesFound) {
-                console.log(charge)
-                charge.status = "Vencida"
+            if (charge.vencimento < new Date() && charge.status === "pendente") {
+                charge.status = "vencida";
             }
         }
 
