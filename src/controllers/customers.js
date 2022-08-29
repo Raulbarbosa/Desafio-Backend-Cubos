@@ -1,5 +1,6 @@
 const knex = require('../connection');
 const { createCustomersSchema } = require('../../src/services/filters');
+const { date } = require('yup');
 
 const createCustomers = async (req, res) => {
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
@@ -9,7 +10,7 @@ const createCustomers = async (req, res) => {
         const cpfAlreadyExists = await knex('customers').where({ cpf }).first();
 
         if (emailAlreadyExists) {
-            return res.status(400).json({ "message": "e-mail já cadastrado" });
+            return res.status(400).json({ errorId: "email", message: "e-mail já cadastrado" });
         }
 
         if (cpfAlreadyExists) {
@@ -70,13 +71,24 @@ const getCustomerCharges = async (req, res) => {
     } catch (error) {
         return res.status(500).json(error.message)
     }
-
 }
 
 const getAllCustomers = async (req, res) => {
 
     try {
         const customers = await knex('customers');
+
+        for (let customer of customers) {
+            const overdueChargesFound = await knex('charges').where('charges.customer_id', customer.id).where('charges.status', 'pendente')
+                .where('charges.vencimento', '<', 'NOW()').first();
+
+            if (overdueChargesFound) {
+                customer.status = "Inadimplente"
+            } else {
+                customer.status = "Em dia"
+            }
+        }
+
         return res.status(200).json(customers);
 
     } catch (error) {
@@ -89,7 +101,6 @@ const updateCustomer = async (req, res) => {
     const { nome, email, telefone, cpf, cep, logradouro, complemento, bairro, cidade, estado } = req.body;
 
     try {
-
         const customerFound = await knex('customers').where({ id }).first();
         await createCustomersSchema.validate(req.body);
 
