@@ -78,14 +78,14 @@ const getAllCustomers = async (req, res) => {
     try {
         const customers = await knex('customers');
 
-        for (let id = 1; id <= customers.length; id++) {
-            let index = id - 1;
-            const overdueChargesFound = await knex('charges').where('charges.customer_id', id).where('charges.status', 'pendente')
+        for (let customer of customers) {
+            const overdueChargesFound = await knex('charges').where('charges.customer_id', customer.id).where('charges.status', 'pendente')
                 .where('charges.vencimento', '<', 'NOW()').first();
+
             if (overdueChargesFound) {
-                customers[index].status = "Inadimplente"
+                customer.status = "Inadimplente"
             } else {
-                customers[index].status = "Em dia"
+                customer.status = "Em dia"
             }
         }
 
