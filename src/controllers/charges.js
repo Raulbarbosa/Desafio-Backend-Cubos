@@ -2,16 +2,16 @@ const knex = require('../connection');
 const { createChargeSchema } = require('../services/filters');
 
 const createCharge = async (req, res) => {
-    const { cliente, descricao, valor, vencimento } = req.body;
+    const { cliente, descricao, valor, vencimento, status } = req.body;
 
     try {
         await createChargeSchema.validate(req.body);
-
         const createdCharge = await knex("charges").insert({
             customer_id: cliente,
             descricao,
             valor,
-            vencimento
+            vencimento,
+            status
         }).returning('*');
 
         if (!createdCharge) {
@@ -27,9 +27,10 @@ const createCharge = async (req, res) => {
 
 const updateCharge = async (req, res) => {
     const { id } = req.params;
-    const { cliente, descricao, valor, vencimento } = req.body;
+    const { cliente, descricao, valor, vencimento, status } = req.body;
 
     try {
+        await createChargeSchema.validate(req.body);
         const chargeFound = await knex('charges').where({ id }).first();
         await createChargeSchema.validate(req.body);
 
@@ -43,7 +44,8 @@ const updateCharge = async (req, res) => {
                 customer_id: cliente,
                 descricao,
                 valor,
-                vencimento
+                vencimento,
+                status
             });
 
         if (!charge) {
@@ -60,7 +62,8 @@ const getCharge = async (req, res) => {
     const { id: chargeId } = req.params;
 
     try {
-        const charge = await knex('charges').join('customers', 'charges.customer_id', 'customers.id').select('charges.*', 'customers.nome').where("charges.id", chargeId);
+        const charge = await knex('charges').join('customers', 'charges.customer_id', 'customers.id')
+            .select('charges.*', 'customers.nome').where("charges.id", chargeId);
 
         if (!charge) {
             return res.status(404).json('Cobrança não encontrada');
@@ -75,7 +78,8 @@ const getCharge = async (req, res) => {
 const getAllCharges = async (req, res) => {
 
     try {
-        const charges = await knex('charges').join('customers', 'charges.customer_id', 'customers.id').select('charges.*', 'customers.nome');
+        const charges = await knex('charges').join('customers', 'charges.customer_id', 'customers.id')
+            .select('charges.*', 'customers.nome');
         return res.status(200).json(charges);
 
     } catch (error) {
