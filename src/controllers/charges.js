@@ -1,3 +1,4 @@
+const { date } = require('yup');
 const knex = require('../connection');
 const { createChargeSchema } = require('../services/filters');
 
@@ -80,6 +81,13 @@ const getAllCharges = async (req, res) => {
     try {
         const charges = await knex('charges').join('customers', 'charges.customer_id', 'customers.id')
             .select('charges.*', 'customers.nome');
+
+        for (let charge of charges) {
+            if (charge.vencimento < new Date() && charge.status === "pendente") {
+                charge.status = "vencida";
+            }
+        }
+
         return res.status(200).json(charges);
 
     } catch (error) {
